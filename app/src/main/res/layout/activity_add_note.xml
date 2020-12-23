@@ -31,11 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
-            android:inputType="textLongMessage"/>
+            android:inputType="textMultiLine"/>
 
     </android.support.design.widget.TextInputLayout>
 
     <Button
+        android:id="@+id/btn_add_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_note"/>

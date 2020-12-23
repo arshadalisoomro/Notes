@@ -2,12 +2,24 @@ package pk.team.inlab.app.notes.model;
 
 public class Note {
 
+    private String id;
     private String noteTitle;
-    private String noteBody;
 
-    public Note(String noteTitle, String noteBody) {
+    public Note(String id, String noteTitle, String noteBody) {
+        this.id = id;
         this.noteTitle = noteTitle;
         this.noteBody = noteBody;
+    }
+
+    private String noteBody;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNoteTitle() {

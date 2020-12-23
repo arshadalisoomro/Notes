@@ -34,14 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         mNoteList = new ArrayList<>();
 
-        Note note1 = new Note("Note 1", "Note body");
-        Note note2 = new Note("Note 2", "Note body");
-        Note note3 = new Note("Note 3", "Note body");
-
-        mNoteList.add(note1);
-        mNoteList.add(note2);
-        mNoteList.add(note3);
-
         mRecyclerView = findViewById(R.id.rv_notes);
 
         mNoteAdapter = new NoteAdapter(MainActivity.this, mNoteList);
