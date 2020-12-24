@@ -13,17 +13,35 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import pk.team.inlab.app.notes.adapter.NoteAdapter;
 import pk.team.inlab.app.notes.model.Note;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int SAVE_NOTE_CODE = 505;
+
     private NoteAdapter mNoteAdapter;
     private List<Note> mNoteList;
     private RecyclerView mRecyclerView;
+
+    //Required Objects
+    private FirebaseFirestore mFirestoreDb;
+    private CollectionReference mCollectionReference;
+    private ListenerRegistration mListenerRegistration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Init Firestore Object
+        mFirestoreDb = FirebaseFirestore.getInstance();
+        mCollectionReference = mFirestoreDb.collection(getString(R.string.notes_collection));
 
         mNoteList = new ArrayList<>();
 
@@ -45,10 +67,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
-
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mListenerRegistration = mCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                @Nullable FirebaseFirestoreException e) {
+
+                // Clear list first
+                mNoteList.clear();
+
+                // Check
+                if (queryDocumentSnapshots != null){
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                        Note note = doc.toObject(Note.class);
+                        mNoteList.add(note);
+                    }
+
+                    // Notify adapter
+                    mNoteAdapter.notifyDataSetChanged();
+                }
+
+            }
+        });
+
     }
 
     @Override

@@ -1,9 +1,15 @@
 package pk.team.inlab.app.notes.model;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class Note {
 
     private String id;
     private String noteTitle;
+
+    public Note(){}
 
     public Note(String id, String noteTitle, String noteBody) {
         this.id = id;
@@ -12,7 +18,6 @@ public class Note {
     }
 
     private String noteBody;
-
 
     public String getId() {
         return id;
@@ -37,5 +42,4 @@ public class Note {
     public void setNoteBody(String noteBody) {
         this.noteBody = noteBody;
     }
-
 }

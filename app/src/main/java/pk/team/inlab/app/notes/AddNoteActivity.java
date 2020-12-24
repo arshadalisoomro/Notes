@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,11 +28,10 @@ public class AddNoteActivity extends AppCompatActivity {
     private TextInputEditText mBodyEditText;
     private ProgressDialog mProgressDialog;
     private Context mContext;
-
     private Button mAddNoteButton;
-    // Firestore
 
-    FirebaseFirestore firestoreDb;
+    // Firestore
+    private FirebaseFirestore mFirestoreDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class AddNoteActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(mContext);
 
         // Init Firestore Object
-        firestoreDb = FirebaseFirestore.getInstance();
+        mFirestoreDb = FirebaseFirestore.getInstance();
 
         // Click
         mAddNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -71,12 +71,11 @@ public class AddNoteActivity extends AppCompatActivity {
 
         Map<String, Object> noteDoc = new HashMap<>();
 
-        noteDoc.put("id", note.getId());
         noteDoc.put("noteTitle", note.getNoteTitle());
         noteDoc.put("noteBody", note.getNoteBody());
 
         // Firestore
-        firestoreDb.collection("Notes").document(note.getId()).set(noteDoc)
+        mFirestoreDb.collection(getString(R.string.notes_collection)).document(note.getId()).set(noteDoc)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -88,6 +87,9 @@ public class AddNoteActivity extends AppCompatActivity {
                         mBodyEditText.setText("");
 
                         Toast.makeText(AddNoteActivity.this, "Note saved.", Toast.LENGTH_SHORT).show();
+
+                        // finish current Activity
+                        AddNoteActivity.this.finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
