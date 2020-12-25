@@ -12,4 +12,7 @@
     <string name="add_note">Add Note</string>
     <string name="note_title">Note title</string>
     <string name="note_body">Note body</string>
+    <string name="notes_collection">Notes</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

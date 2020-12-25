@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,9 +30,9 @@ public class AddNoteActivity extends AppCompatActivity {
     private Context mContext;
 
     private Button mAddNoteButton;
-    // Firestore
 
-    FirebaseFirestore firestoreDb;
+    // Firestore
+    private FirebaseFirestore mFirestoreDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +45,21 @@ public class AddNoteActivity extends AppCompatActivity {
         mBodyEditText = findViewById(R.id.tiet_note_body);
         mAddNoteButton = findViewById(R.id.btn_add_note);
 
-        mProgressDialog = new ProgressDialog(mContext);
-
         // Init Firestore Object
-        firestoreDb = FirebaseFirestore.getInstance();
+        mFirestoreDb = FirebaseFirestore.getInstance();
 
         // Click
         mAddNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Logic for saving data to
-                String id = UUID.randomUUID().toString();
                 String noteTitle = mTitleEditText.getText().toString();
                 String noteBody = mBodyEditText.getText().toString();
 
-                saveToFirestore(new Note(id, noteTitle, noteBody));
+                // Generate unique id for each document/record
+                String id = UUID.randomUUID().toString();
+
+                saveToFirestore(new Note(id, noteTitle, noteBody, new Date()));
 
             }
         });
@@ -71,21 +72,20 @@ public class AddNoteActivity extends AppCompatActivity {
 
         Map<String, Object> noteDoc = new HashMap<>();
 
-        noteDoc.put("id", note.getId());
         noteDoc.put("noteTitle", note.getNoteTitle());
         noteDoc.put("noteBody", note.getNoteBody());
+        noteDoc.put("timestamp", note.getTimestamp());
 
         // Firestore
-        firestoreDb.collection("Notes").document(note.getId()).set(noteDoc)
+        mFirestoreDb.collection(getString(R.string.notes_collection)).document(note.getId()).set(noteDoc)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // This method is called when data is saved
                         mProgressDialog.dismiss();
 
-                        // Empty the EditTexts
-                        mTitleEditText.setText("");
-                        mBodyEditText.setText("");
+                        // Finish Activity
+                        AddNoteActivity.this.finish();
 
                         Toast.makeText(AddNoteActivity.this, "Note saved.", Toast.LENGTH_SHORT).show();
                     }
