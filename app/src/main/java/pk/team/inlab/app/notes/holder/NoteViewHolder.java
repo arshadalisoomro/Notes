@@ -26,4 +26,7 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         mNoteTitleTextView.setText(noteTile);
     }
 
+    public void setOnItemClickListener(View.OnClickListener onClickListener) {
+        mLinearLayout.setOnClickListener(onClickListener);
+    }
 }

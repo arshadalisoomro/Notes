@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -87,8 +88,8 @@ public class AddNoteActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Logic for saving data to
                 String id;
-                String noteTitle = mTitleEditText.getText().toString();
-                String noteBody = mBodyEditText.getText().toString();
+                String noteTitle = "";
+                String noteBody = "";
 
                 if (editNoteId.isEmpty()){
                     // Generate unique id for each document/record
@@ -97,8 +98,23 @@ public class AddNoteActivity extends AppCompatActivity {
                     id = editNoteId;
                 }
 
-                // Save Update
-                saveToFirestore(new Note(id, noteTitle, noteBody, new Date()));
+                if (TextUtils.isEmpty(mTitleEditText.getText().toString())){
+                    mTitleEditText.setError("Note title must not be empty");
+                } else {
+                    noteTitle = mTitleEditText.getText().toString();
+                }
+
+                if (TextUtils.isEmpty(mBodyEditText.getText().toString())){
+                    mBodyEditText.setError("Note body must not be empty");
+                } else {
+                    noteBody = mBodyEditText.getText().toString();
+                }
+
+                if (!TextUtils.isEmpty(mTitleEditText.getText().toString())
+                || !TextUtils.isEmpty(mBodyEditText.getText().toString())){
+                    // Save Update
+                    saveToFirestore(new Note(id, noteTitle, noteBody, new Date()));
+                }
 
             }
         });

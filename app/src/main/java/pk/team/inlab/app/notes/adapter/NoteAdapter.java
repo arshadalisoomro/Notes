@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import pk.team.inlab.app.notes.AddNoteActivity;
+import pk.team.inlab.app.notes.DetailsActivity;
 import pk.team.inlab.app.notes.R;
 import pk.team.inlab.app.notes.holder.NoteViewHolder;
 import pk.team.inlab.app.notes.model.Note;
@@ -56,6 +57,16 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         Note note = mNoteList.get(position);
+
+        holder.setOnItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editNoteIntent = new Intent(mContext, DetailsActivity.class);
+                editNoteIntent.putExtra(NOTE_ID_EXTRA, note.getId());
+
+                mContext.startActivity(editNoteIntent);
+            }
+        });
 
         holder.setEditOrDeleteItemClickListener(new View.OnLongClickListener() {
             @Override
