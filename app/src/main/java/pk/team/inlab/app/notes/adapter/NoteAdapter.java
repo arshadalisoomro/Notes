@@ -2,9 +2,11 @@ package pk.team.inlab.app.notes.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,11 +17,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+import pk.team.inlab.app.notes.AddNoteActivity;
 import pk.team.inlab.app.notes.R;
 import pk.team.inlab.app.notes.holder.NoteViewHolder;
 import pk.team.inlab.app.notes.model.Note;
@@ -30,6 +34,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     private List<Note> mNoteList;
     private FirebaseFirestore mFirebaseFirestore;
     private ProgressDialog mProgressDialog;
+
+    public static final String NOTE_ID_EXTRA = "note_id";
 
     public NoteAdapter(Context mContext, List<Note> mNoteList, FirebaseFirestore mFirebaseFirestore) {
         this.mContext = mContext;
@@ -79,7 +85,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
                         switch (id){
                             case R.id.menu_item_edit : {
-                                Toast.makeText(mContext, "Edit clicked", Toast.LENGTH_SHORT).show();
+                                Intent editNoteIntent = new Intent(mContext, AddNoteActivity.class);
+
+                                editNoteIntent.putExtra(NOTE_ID_EXTRA, note.getId());
+
+                                mContext.startActivity(editNoteIntent);
                                 break;
                             }
                             case R.id.menu_item_delete : {
